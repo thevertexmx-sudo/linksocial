@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkSocial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #6a7df7;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .add-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(74, 108, 247, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            transform: translateY(-20px);
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: #2a2a2a;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.4);
+        }
+
+        /* Cards Container */
+        .cards-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-link {
+            color: #aaa;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #f44336;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .card-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+                margin-right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <div class="logo" id="logo">
+                <!-- El logo se cargará dinámicamente -->
+            </div>
+            <h1>LinkSocial</h1>
+        </div>
+        <button class="add-btn" id="addGroupBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+    </header>
+
+    <!-- Cards Container -->
+    <div class="cards-container" id="cardsContainer">
+        <div class="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Cargando grupos...</p>
+        </div>
+    </div>
+
+    <!-- Modal for adding groups -->
+    <div class="modal" id="groupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Agregar Grupo</h2>
+                <button class="close-btn" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="groupForm">
+                <div class="form-group">
+                    <label for="groupName">Nombre del Grupo</label>
+                    <input type="text" id="groupName" placeholder="Ej: Familia, Amigos del Trabajo" required>
+                </div>
+                <div class="form-group">
+                    <label for="groupLink">Link del Grupo</label>
+                    <input type="url" id="groupLink" placeholder="https://ejemplo.com/grupo" required>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-plus-circle"></i> Agregar Grupo
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Configuración de JSONBin.io - CON TUS DATOS
+        const JSONBIN_BIN_ID = '68f319dfd0ea881f40a93be1';
+        const JSONBIN_API_KEY = '$2a$10$aiXM4gQF4jYMhTavUcTJ4OwV9YjmmtKKkd2VZn/3AexNJ5UrHEepm';
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+        // Elementos del DOM
+        const addGroupBtn = document.getElementById('addGroupBtn');
+        const groupModal = document.getElementById('groupModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const groupForm = document.getElementById('groupForm');
+        const cardsContainer = document.getElementById('cardsContainer');
+        const toast = document.getElementById('toast');
+        const logoContainer = document.getElementById('logo');
+
+        // Estado de la aplicación
+        let groups = [];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLogo();
+            loadGroups();
+            
+            // Event Listeners
+            addGroupBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            groupForm.addEventListener('submit', handleFormSubmit);
+            
+            // Cerrar modal al hacer clic fuera
+            groupModal.addEventListener('click', (e) => {
+                if (e.target === groupModal) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Cargar el logo
+        function loadLogo() {
+            const logoImg = new Image();
+            logoImg.src = './img/logo.png';
+            logoImg.alt = 'Logo LinkSocial';
+            logoImg.style.width = '100%';
+            logoImg.style.height = '100%';
+            logoImg.style.objectFit = 'contain';
+            
+            logoImg.onload = function() {
+                logoContainer.innerHTML = '';
+                logoContainer.appendChild(logoImg);
+            };
+            
+            logoImg.onerror = function() {
+                // Si el logo no carga, mostrar un placeholder simple
+                logoContainer.innerHTML = `
+                    <div class="logo-placeholder">
+                        <i class="fas fa-link"></i>
+                    </div>
+                `;
+            };
+        }
+
+        // Funciones del Modal
+        function openModal() {
+            groupModal.style.display = 'flex';
+            document.getElementById('groupName').focus();
+        }
+
+        function closeModal() {
+            groupModal.style.display = 'none';
+            groupForm.reset();
+        }
+
+        // Manejar envío del formulario
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const groupName = document.getElementById('groupName').value.trim();
+            const groupLink = document.getElementById('groupLink').value.trim();
+            
+            if (!groupName || !groupLink) {
+                showToast('Por favor, completa todos los campos', 'error');
+                return;
+            }
+            
+            // Validar URL
+            try {
+                new URL(groupLink);
+            } catch (error) {
+                showToast('Por favor, ingresa una URL válida', 'error');
+                return;
+            }
+            
+            const newGroup = {
+                id: Date.now().toString(),
+                name: groupName,
+                link: groupLink,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Agregar grupo localmente
+            groups.unshift(newGroup);
+            updateLocalStorage();
+            renderGroups();
+            closeModal();
+            
+            // Intentar guardar en JSONBin.io
+            try {
+                await saveToJSONBin();
+                showToast('Grupo agregado exitosamente', 'success');
+            } catch (error) {
+                console.error('Error al guardar en JSONBin:', error);
+                showToast('Grupo guardado localmente (error en servidor)', 'error');
+            }
+        }
+
+        // Cargar grupos
+        async function loadGroups() {
+            // Primero intentar cargar desde localStorage
+            const localGroups = getFromLocalStorage();
+            
+            if (localGroups && localGroups.length > 0) {
+                groups = localGroups;
+                renderGroups();
+            }
+            
+            // Luego intentar sincronizar con JSONBin.io
+            try {
+                const response = await fetch(JSONBIN_URL, {
+                    headers: {
+                        'X-Master-Key': JSONBIN_API_KEY
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Error al cargar desde JSONBin');
+                
+                const data = await response.json();
+                const remoteGroups = data.record || [];
+                
+                // Si hay grupos remotos y son diferentes a los locales, usar los remotos
+                if (remoteGroups.length > 0 && JSON.stringify(remoteGroups) !== JSON.stringify(localGroups)) {
+                    groups = remoteGroups;
+                    updateLocalStorage();
+                    renderGroups();
+                    showToast('Grupos sincronizados desde la nube', 'success');
+                }
+                
+                // Si no hay grupos locales ni remotos, mostrar estado vacío
+                if (groups.length === 0) {
+                    renderEmptyState();
+                }
+            } catch (error) {
+                console.error('Error al cargar desde JSONBin:', error);
+                // Si no hay grupos locales, mostrar estado vacío
+                if (!localGroups || localGroups.length === 0) {
+                    renderEmptyState();
+                }
+            }
+        }
+
+        // Guardar en JSONBin.io
+        async function saveToJSONBin() {
+            const response = await fetch(JSONBIN_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify(groups)
+            });
+            
+            if (!response.ok) throw new Error('Error al guardar en JSONBin');
+            
+            return await response.json();
+        }
+
+        // Renderizar grupos
+        function renderGroups() {
+            if (groups.length === 0) {
+                renderEmptyState();
+                return;
+            }
+            
+            cardsContainer.innerHTML = '';
+            
+            groups.forEach(group => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.addEventListener('click', () => {
+                    window.open(group.link, '_blank');
+                });
+                
+                card.innerHTML = `
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${group.name}</div>
+                        <div class="card-link">${group.link}</div>
+                    </div>
+                `;
+                
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        // Renderizar estado vacío
+        function renderEmptyState() {
+            cardsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-users"></i>
+                    <h3>No hay grupos aún</h3>
+                    <p>Haz clic en el botón "+" para agregar tu primer grupo</p>
+                </div>
+            `;
+        }
+
+        // Funciones de localStorage
+        function updateLocalStorage() {
+            localStorage.setItem('linksocial-groups', JSON.stringify(groups));
+        }
+
+        function getFromLocalStorage() {
+            const stored = localStorage.getItem('linksocial-groups');
+            return stored ? JSON.parse(stored) : null;
+        }
+
+        // Mostrar notificación toast
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
